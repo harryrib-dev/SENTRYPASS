@@ -43,6 +43,16 @@
         }
 
         header { text-align: center; margin-bottom: 25px; }
+        
+        /* Estilo da Logo */
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            filter: drop-shadow(0 0 5px var(--accent-color));
+        }
+
         header h1 { letter-spacing: 1px; font-size: 1.5rem; }
         header h1 span { color: var(--accent-color); }
         header p { color: var(--text-dim); font-size: 0.75rem; margin-top: 4px; }
@@ -167,6 +177,7 @@
 
 <div class="container">
     <header>
+        <img src="img.png" alt="SentryPass Logo" class="logo">
         <h1>SENTRY<span>PASS</span></h1>
         <p>Gerador de Senhas Criptográficas</p>
     </header>
@@ -225,7 +236,7 @@
 
         let pool = "";
         if(document.getElementById('low').checked) pool += charSets.low;
-        if(document.getElementById('upp').checked) pool += charSets.upp;
+        if(document.getElementById('upp').checked) pool += charSets.upper;
         if(document.getElementById('num').checked) pool += charSets.num;
         if(document.getElementById('sym').checked) pool += charSets.sym;
 

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SentryPass - Gerador de Senhas</title>
+    <style>
+        :root {
+            --bg-color: #08080a;
+            --card-bg: #121214;
+            --accent-color: #00ff88;
+            --text-main: #ffffff;
+            --text-dim: #88888b;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            margin: 0; 
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            border: 1px solid #222;
+        }
+
+        header { text-align: center; margin-bottom: 25px; }
+        header h1 { letter-spacing: 1px; font-size: 1.5rem; }
+        header h1 span { color: var(--accent-color); }
+        header p { color: var(--text-dim); font-size: 0.75rem; margin-top: 4px; }
+
+        .length-control {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #1a1a1e;
+            padding: 15px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            gap: 8px;
+        }
+
+        .step-btn {
+            background: #252529;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-btn:active { transform: scale(0.9); background: var(--accent-color); color: #000; }
+
+        #length-num { font-size: 2.5rem; font-weight: 800; line-height: 1; }
+        .length-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .chip { cursor: pointer; }
+        .chip input { display: none; }
+        .chip span {
+            background: #1a1a1e;
+            border: 1px solid #333;
+            display: flex;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            justify-content: center;
+            color: var(--text-dim);
+            transition: 0.2s;
+        }
+
+        .chip input:checked + span {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .display-box {
+            background: #000;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            font-family: 'Consolas', monospace;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            border: 1px solid #222;
+            word-break: break-all;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .actions { display: flex; gap: 10px; margin-bottom: 25px; }
+        button.main { flex: 2; background: var(--accent-color); color: #000; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        button.copy { flex: 1; background: #252529; color: #fff; border: none; border-radius: 12px; cursor: pointer; }
+
+        .history { border-top: 1px solid #222; padding-top: 20px; }
+        .history h3 { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 10px; text-transform: uppercase; }
+        .history-list { display: flex; flex-direction: column; gap: 6px; }
+        .history-item {
+            background: rgba(255,255,255,0.03);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        footer a:hover {
+            text-shadow: 0 0 8px var(--accent-color);
+        }
+
+        @media (max-width: 350px) {
+            .container { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>SENTRY<span>PASS</span></h1>
+        <p>Gerador de Senhas Criptográficas</p>
+    </header>
+
+    <div class="length-control">
+        <button class="step-btn" onclick="changeLen(1)">+</button>
+        <span id="length-num">12</span>
+        <span class="length-label">Caracteres</span>
+        <button class="step-btn" onclick="changeLen(-1)">-</button>
+    </div>
+
+    <div class="options-grid">
+        <label class="chip"><input type="checkbox" id="low" checked> <span>abc</span></label>
+        <label class="chip"><input type="checkbox" id="upp" checked> <span>ABC</span></label>
+        <label class="chip"><input type="checkbox" id="num" checked> <span>123</span></label>
+        <label class="chip"><input type="checkbox" id="sym" checked> <span>!@#</span></label>
+    </div>
+
+    <div class="display-box" id="pw-output">Clique em Gerar</div>
+
+    <div class="actions">
+        <button class="main" onclick="generate()">GERAR NOVA</button>
+        <button class="copy" id="copy-btn" onclick="copyPw()">COPIAR</button>
+    </div>
+
+    <div class="history">
+        <h3>Últimas 3 geradas</h3>
+        <div id="hist-list" class="history-list">
+            <div class="history-item">---</div>
+            <div class="history-item">---</div>
+            <div class="history-item">---</div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    Criado por <a href="https://linktr.ee/harry.w.ribeiro.s" target="_blank">harryrib-dev</a>
+</footer>
+
+<script>
+    let currentLen = 12;
+    let history = [];
+
+    function changeLen(v) {
+        currentLen = Math.max(8, Math.min(50, currentLen + v));
+        document.getElementById('length-num').innerText = currentLen;
+    }
+
+    function generate() {
+        const charSets = {
+            low: "abcdefghijklmnopqrstuvwxyz",
+            upp: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+            num: "0123456789",
+            sym: "!@#$%^&*()_+~`|}{[]:;?><,./-="
+        };
+
+        let pool = "";
+        if(document.getElementById('low').checked) pool += charSets.low;
+        if(document.getElementById('upp').checked) pool += charSets.upp;
+        if(document.getElementById('num').checked) pool += charSets.num;
+        if(document.getElementById('sym').checked) pool += charSets.sym;
+
+        if(!pool) {
+            alert("Selecione pelo menos um tipo de caractere!");
+            return;
+        }
+
+        const currentDisplay = document.getElementById('pw-output').innerText;
+        if(currentDisplay !== "Clique em Gerar") {
+            history.unshift(currentDisplay);
+            if(history.length > 3) history.pop();
+            renderHistory();
+        }
+
+        let password = "";
+        const randomValues = new Uint32Array(currentLen);
+        window.crypto.getRandomValues(randomValues);
+
+        for (let i = 0; i < currentLen; i++) {
+            password += pool[randomValues[i] % pool.length];
+        }
+
+        document.getElementById('pw-output').innerText = password;
+    }
+
+    function renderHistory() {
+        const list = document.getElementById('hist-list');
+        list.innerHTML = history.map(p => `<div class="history-item">${p}</div>`).join('');
+    }
+
+    function copyPw() {
+        const text = document.getElementById('pw-output').innerText;
+        if(text === "Clique em Gerar") return;
+        
+        navigator.clipboard.writeText(text);
+        
+        const btn = document.getElementById('copy-btn');
+        btn.innerText = "COPIADO";
+        btn.style.color = "#00ff88";
+        setTimeout(() => {
+            btn.innerText = "COPIAR";
+            btn.style.color = "#fff";
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>

@@ -21,7 +21,7 @@ A aplicação foi construída com foco em **segurança**, **responsividade** e *
 
 ## 📱 Como usar
 
-1.  Acesse o projeto pelo [[Link do seu GitHub Pages aqui]](https://harryrib-dev.github.io/SENTRYPASS/).
+1.  Acesse o projeto pelo [[Link]](https://harryrib-dev.github.io/SENTRYPASS/).
 2.  Defina o tamanho da senha usando os botões `+` e `-`.
 3.  Marque os tipos de caracteres desejados.
 4.  Clique em **GERAR NOVA**.
